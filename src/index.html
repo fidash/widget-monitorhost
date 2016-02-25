@@ -14,10 +14,6 @@
 
     <div class="mynavbar navbar navbar-default" style="z-index: 1000;">
 
-      <ul class="nav nav-pills">
-        <li role="presentation" class="active" id="region-pill"><a>Hosts</a></li>
-      </ul>
-
       <div class="selects">
         <select class="form-control selectpicker" id="region_selector" multiple data-selected-text-format="count" data-role="none" name="region" title="Loading Regions" data-count-selected-text="{0} regiones" disabled></select>
       </div>
@@ -40,27 +36,9 @@
           <input type="checkbox" name="select-charts-region" data-size="mini" data-handle-width="30" data-label-width="10" data-on-text="Disk" data-off-text="Disk" checked />
           <i id="disksort" class="sort fa fa-fw fa-sort"></i>
         </div>
-        <!-- <div class="col-xs-3" style="text-align: center;">
-             <input type="checkbox" name="select-charts-region" data-size="mini" data-handle-width="30" data-label-width="10" data-on-text="IP" data-off-text="IP" checked style="width: 39px;"/>
-             <i id="ipsort" class="sort fa fa-fw fa-sort"></i>
-             </div> -->
-      </div>
-
-      <div id="switch-host" class="container-fluid switch-container hide">
-        <div class="col-xs-4" style="text-align: center;">
-          <input type="checkbox" name="select-charts-host" data-size="mini" data-handle-width="30" data-label-width="10" data-on-text="CPU" data-off-text="CPU" checked />
-        </div>
-        <div class="col-xs-4" style="text-align: center;">
-          <input type="checkbox" name="select-charts-host" data-size="mini" data-handle-width="30" data-label-width="10" data-on-text="RAM" data-off-text="RAM" checked />
-        </div>
-        <div class="col-xs-4" style="text-align: center;">
-          <input type="checkbox" name="select-charts-host" data-size="mini" data-handle-width="30" data-label-width="10" data-on-text="Disk" data-off-text="Disk" checked />
-        </div>
       </div>
     </div>
 
-
-    <!-- <div id="regionContainer" class="container-fluid"> -->
     <div id="regionContainer" class="flexbox">
       <!-- Divs that will hold the charts -->
       <!-- <div class="">
@@ -71,15 +49,6 @@
            </div> -->
     </div>
 
-    <!-- <div id="host-view" class="hide">
-         <div id="host-placeholder" class="host-placeholder hide">No Host selected</div> -->
-    <!-- Divs that will hold the charts -->
-    <!-- <div class="">
-         <div id="cpu-host" class="chartContainer col-xs-4"></div>
-         <div id="ram-host" class="chartContainer col-xs-4"></div>
-         <div id="disk-host" class="chartContainer col-xs-4"></div>
-         </div>
-         </div> -->
 
     <!--Load the AJAX API-->
     <!-- <script type="text/javascript" src="https://www.google.com/jsapi"></script> -->

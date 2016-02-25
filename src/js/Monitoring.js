@@ -273,26 +273,6 @@ var Monitoring = (function () {
         $("#region_selector").selectpicker("refresh");
     }
 
-    function setView (view) {
-        switch (view) {
-            case "host":
-            $(".input-group").removeClass("hide");
-                break;
-
-            case "region":
-                $(".input-group").addClass("hide");
-                break;
-        }
-
-        if (view !== this.view) {
-            $('#region-view').toggleClass('hide');
-            $('#host-view').toggleClass('hide');
-        }
-
-        this.view = view;
-        this.hostId = $('#host').val();
-    }
-
     function diffArrays(a, b) {
         return a.filter(function(i) {return b.indexOf(i) < 0;});
     }
@@ -405,43 +385,6 @@ var Monitoring = (function () {
         });
     }
 
-    // function setPlaceholder (show) {
-
-    //     var placeholder = $("#host-placeholder");
-    //     var body = $("body");
-
-    //     if (show) {
-    //         placeholder.removeClass("hide");
-    //         body.addClass("placeholder-bg");
-    //     }
-    //     else {
-    //         placeholder.addClass("hide");
-    //         body.removeClass("placeholder-bg");
-    //     }
-    // }
-
-    // function getWithAuth(url, callback, callbackerror) {
-    //     callbackerror = callbackerror || function() {};
-    //     if (MashupPlatform.context.get('fiware_token_available')) {
-    //         MashupPlatform.http.makeRequest(url, {
-    //             method: 'GET',
-    //             requestHeaders: {
-    //                 "X-FI-WARE-OAuth-Token": "true",
-    //                 "X-FI-WARE-OAuth-Header-Name": "X-Auth-Token"
-    //             },
-    //             onSuccess: function(response) {
-    //                 var data = JSON.parse(response.responseText);
-    //                 callback(data);
-    //             },
-    //             onError: function(response) {
-    //                 callbackerror(response);
-    //             }
-    //         });
-    //     } else {
-    //         MashupPlatform.widget.log("No fiware token available");
-    //     }
-    // }
-
     function getRegionsMonitoring() {
         FIDASHRequests.get(url, function(err, data) {
             if (err) {
@@ -462,7 +405,6 @@ var Monitoring = (function () {
             fillRegionSelector(regions.sort());
             selectSavedRegions.call(this);
             this.regions = $("#region_selector").val() || [];
-            // getRawData.call(this);
         }.bind(this));
     }
 
@@ -510,8 +452,6 @@ var Monitoring = (function () {
             this.options.orderinc = matchS[2];
             sortRegions.call(this);
         }
-
-        // var listRegionsSelected = this.
     }
 
     /******************************************************************/
