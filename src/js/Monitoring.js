@@ -74,7 +74,7 @@ var Monitoring = (function () {
     *****************************************************************/
 
     function Monitoring () {
-        this.region = "";
+        this.regions = [];
 
         this.view   = "region";
         this.hostId = $('#host').val();
@@ -195,6 +195,7 @@ var Monitoring = (function () {
                 .forEach(removeRegion.bind(this));
         }
         // regions.forEach(drawHost.bind(this));
+        this.variables.regionSelected.set(regions.join(","));
         this.last_regions = regions;
     }
 
@@ -448,6 +449,7 @@ var Monitoring = (function () {
                 // The API are down
                 var regionsT = ["Spain2", "Berlin2"];
                 fillRegionSelector(regionsT.sort());
+                selectSavedRegions.call(this);
                 this.regions = $("#region_selector").val() || [];
                 return;
             }
@@ -458,6 +460,7 @@ var Monitoring = (function () {
             });
 
             fillRegionSelector(regions.sort());
+            selectSavedRegions.call(this);
             this.regions = $("#region_selector").val() || [];
             // getRawData.call(this);
         }.bind(this));
@@ -477,26 +480,27 @@ var Monitoring = (function () {
         drawHosts.call(this, this.regions);
     }
 
+    function handleSwitchVariable(name) {
+        if (this.variables[name + "On"].get() === "") {
+            this.variables[name + "On"].set("true");
+        } else if (this.variables[name + "On"].get() !== "true") {
+            this.measures_status[name] = false;
+            $("." + name).addClass("myhide");
+            $("#" + name + "Switch input[name='select-charts-region']").bootstrapSwitch("state", false, true);
+        }
+    }
+
+    function selectSavedRegions() {
+        // Get regions
+        var regionsS = this.variables.regionSelected.get();
+        var regions = regionsS.split(",");
+        receiveRegions.call(this, JSON.stringify(regions));
+    }
+
     function handleVariables() {
-        if (this.variables.cpuOn.get() === "") {
-            this.variables.cpuOn.set("true");
-        } else if (this.variables.cpuOn.get() !== "true") {
-            this.measures_status.cpu = false;
-            $(".cpu").addClass("myhide");
-            // toggle the switch
-        }
-        if (this.variables.ramOn.get() === "") {
-            this.variables.ramOn.set("true");
-        } else if (this.variables.ramOn.get() !== "true") {
-            this.measures_status.ram = false;
-            $(".ram").addClass("myhide");
-        }
-        if (this.variables.diskOn.get() === "") {
-            this.variables.diskOn.set("true");
-        } else if (this.variables.diskOn.get() !== "true") {
-            this.measures_status.disk = false;
-            $(".disk").addClass("myhide");
-        }
+        handleSwitchVariable.call(this, "cpu");
+        handleSwitchVariable.call(this, "ram");
+        handleSwitchVariable.call(this, "disk");
 
         var sort = this.variables.sort.get();
         var matchS = sort.match(/^(.+)\/\/(.+)$/);
@@ -506,6 +510,8 @@ var Monitoring = (function () {
             this.options.orderinc = matchS[2];
             sortRegions.call(this);
         }
+
+        // var listRegionsSelected = this.
     }
 
     /******************************************************************/
