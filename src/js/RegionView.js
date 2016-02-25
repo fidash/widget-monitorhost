@@ -91,7 +91,7 @@ var RegionView = (function () {
     /*                 P U B L I C   F U N C T I O N S                */
     /******************************************************************/
 
-    RegionView.prototype.build = function (region, rawData, measures_status) {
+    RegionView.prototype.build = function (region, rawData, measures_status){
         $("<div></div>")
             .prop("id", region)
             .addClass("flexitem regionChart noselect")

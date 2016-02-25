@@ -1,70 +1,260 @@
-/* global google,require,RegionView,FIDASHRequests */
+/* global $,MashupPlatform,HostView,FIDASHRequests */
 var Monitoring = (function () {
     "use strict";
 
     /***  AUTHENTICATION VARIABLES  ***/
     var url = "http://130.206.84.4:1028/monitoring/regions/";
 
-    var views = {
-        'region': RegionView
-        // 'host': HostView
+    var createDefaultHost = function createDefaultHost(region, host) {
+        var randomN = function randomN() {
+            return (Math.random() * 100).toString();
+        };
+
+        return {
+            "_links": {
+                "self": {
+                    "href": "/monitoring/regions/" + region + "/hosts/" + host
+                },
+                "services": {
+                    "href": "/monitoring/regions/" + region + "/hosts/" + host + "/services"
+                }
+            },
+            "regionid": region,
+            "hostid": host,
+            "ipAddresses": [
+                {
+                    "ipAddress": "1.2.3.4"
+                }
+            ],
+            "role": "compute/controller",
+            "owd_endpoint_dest_default": "xyz",
+            "bwd_endpoint_dest_default": "xyz",
+            "owd_frequency": "100",
+            "bwd_frequency": "100",
+            "measures": [
+                {
+                    "timestamp": "2013-12-20 12.00",
+                    "percCPULoad": {
+                        "value": randomN(),
+                        "description": "desc"
+                    },
+                    "percRAMUsed": {
+                        "value": randomN(),
+                        "description": "desc"
+                    },
+                    "percDiskUsed": {
+                        "value": randomN(),
+                        "description": "desc"
+                    },
+                    "sysUptime": {
+                        "value": randomN(),
+                        "description": "desc"
+                    },
+                    "owd_status": {
+                        "value": randomN(),
+                        "description": "desc"
+                    },
+                    "bwd_status": {
+                        "value": randomN(),
+                        "description": "desc"
+                    }
+                }
+            ],
+            "traps": [
+                {
+                    "description": "desc"
+                }
+            ]
+        };
     };
+
 
     /*****************************************************************
     *                     C O N S T R U C T O R                      *
     *****************************************************************/
 
     function Monitoring () {
+        this.region = "";
+
         this.view   = "region";
         this.hostId = $('#host').val();
+        this.hostsByRegion = {};
         this.options = {
             orderby: "",
             orderinc: "",
             data: {}
         };
         this.measures_status = {
-            vcpu: true,
+            cpu: true,
             ram: true,
-            disk: true,
-            ip: true
+            disk: true
         };
+
+        this.minvalues = {
+            cpu: 0,
+            ram: 0,
+            disk: 0
+        };
+
+        this.variables = {
+            regionSelected: MashupPlatform.widget.getVariable("regionSelected"),
+            cpuOn: MashupPlatform.widget.getVariable("cpuOn"),
+            ramOn: MashupPlatform.widget.getVariable("ramOn"),
+            diskOn: MashupPlatform.widget.getVariable("diskOn"),
+            sort: MashupPlatform.widget.getVariable("sort")
+        };
+
+        this.comparef = or;
+
+        handlePreferences.call(this);
+        handleVariables.call(this);
     }
 
     /******************************************************************
     *                P R I V A T E   F U N C T I O N S               *
     ******************************************************************/
 
-    function drawRegions(regions) {
+    function handlePreferences() {
+        var checkValue = function checkValue(value, name) {
+            if (Number.isNaN(value)) {
+                MashupPlatform.widget.log("The preference for " + name + " is not a number.");
+                return 0;
+            }
+            if (value < 0 || value > 100) {
+                MashupPlatform.widget.log("The preference for " + name + " are not in the limits");
+                return 0;
+            }
+            return value;
+        };
+
+        var cpu = checkValue(parseFloat(MashupPlatform.prefs.get("min-cpu")) || 0, "CPU");
+        var ram = checkValue(parseFloat(MashupPlatform.prefs.get("min-ram")) || 0, "RAM");
+        var disk = checkValue(parseFloat(MashupPlatform.prefs.get("min-disk")) || 0, "Disk");
+        this.minvalues = {
+            cpu: cpu,
+            ram: ram,
+            disk: disk
+        };
+
+        this.comparef = (parseInt(MashupPlatform.prefs.get("numbermin")) === 1) ? and : or;
+
+        updateHiddenHosts.call(this);
+    }
+
+    var or = function or() {
+        var value = false;
+        for(var i = 0; i < arguments.length; i++) {
+            value = value || arguments[i];
+        }
+        return value;
+    };
+
+    var and = function and() {
+        var value = true;
+        for(var i = 0; i < arguments.length; i++) {
+            value = value && arguments[i];
+        }
+        return value;
+    };
+
+    var updateHiddenHosts = function updateHiddenHosts() {
+        // Use search bar?
+        var mincpu = this.minvalues.cpu,
+            minram = this.minvalues.ram,
+            mindisk = this.minvalues.disk;
+
+        $(".hostChart").each(function(index, host) {
+            var id = host.id; // $(host).prop("id");
+            var data = this.options.data[id];
+            if (!data) {
+                return;
+            }
+            var cpu = parseFloat(data.cpu);
+            var ram = parseFloat(data.ram);
+            var disk = parseFloat(data.disk);
+
+            var elem = $(host);
+            if (this.comparef(cpu > mincpu, ram > minram, disk > mindisk)) {
+                elem.show();
+            } else {
+                elem.hide();
+            }
+        }.bind(this));
+    };
+
+    function drawHosts(regions) {
         // $("#regionContainer").empty();
         // diff and only get news, and remove/hide unselected?
         if (regions.length > this.last_regions.length) {
             // add
             diffArrays(regions, this.last_regions)
-                .forEach(drawRegion.bind(this));
+                .forEach(drawHostsRegion.bind(this));
         } else if (regions.length < this.last_regions.length) {
             // remove
             diffArrays(this.last_regions, regions)
                 .forEach(removeRegion.bind(this));
         }
-        // regions.forEach(drawRegion.bind(this));
+        // regions.forEach(drawHost.bind(this));
         this.last_regions = regions;
     }
 
     function removeRegion(region) {
-        $("#" + region).remove();
+        // Remove all hosts from the region
+        $("." + region).remove();
     }
 
-    function drawRegion(region) {
-        var host = this.view === "host" ? "/vms/" + this.hostId : "";
-        FIDASHRequests.get(url + region + host, function(err, data) {
+    function drawHostsRegion(region) {
+        var newurl = url + region + "/hosts";
+
+        FIDASHRequests.get(newurl, function(err, data) {
             if (err) {
                 window.console.log(err);
+                // The API are down, some test data
+                var hosts2 = [];
+                for(var i = 0; i < Math.floor(Math.random() * 100); i++) {
+                    hosts2.push(Math.floor(Math.random() * 10000));
+                }
+                // var hosts2 = [Math.random() * 100, Math.random() * 100, Math.random() * 100];
+
+                this.hostsByRegion[region] = hosts2;
+                hosts2.forEach(function(h) {
+                    setTimeout(drawHost.bind(this, region, h), (Math.random() * 3000));
+                    // drawHost.call(this, region, h);
+                }.bind(this));
                 return;
             }
             // setPlaceholder(false);
-            var view = new views[this.view]();
-            var rdata = view.build(region, data, this.measures_status);
-            this.options.data[rdata.region] = rdata.data;
+            // Data is a list of hosts, let's do one request by host
+            var hosts = [];
+            data.hosts.forEach(function (x) {
+                hosts.push(x.id);
+            });
+
+            this.hostsByRegion[region] = hosts;
+
+            hosts.forEach(drawHost.bind(this, region));
+            sortRegions.call(this);
+
+            /* var view = new views[this.view]();
+               var rdata = view.build(region, data, this.measures_status);
+               this.options.data[rdata.region] = rdata.data;
+               sortRegions.call(this); */
+        }.bind(this));
+    }
+    function drawHost(region, host) {
+        var newurl  = url + region + "/host/" + host;
+        FIDASHRequests.get(newurl, function(err, data) {
+            if (err) {
+                window.console.log(err);
+                // The API seems down
+                var h = createDefaultHost(region, host);
+                var hdata2 = new HostView().build(region, host, h, this.measures_status, this.minvalues, this.comparef);
+                this.options.data[hdata2.id] = hdata2.data;
+                sortRegions.call(this);
+                return;
+            }
+            var hdata = new HostView().build(region, host, data, this.measures_status, this.minvalues, this.comparef);
+            this.options.data[hdata.id] = hdata.data;
             sortRegions.call(this);
         }.bind(this));
     }
@@ -130,7 +320,7 @@ var Monitoring = (function () {
             this.regions = $('#region_selector').val() || [];
             this.hostId = $('#host').val();
             this.last_regions = this.last_regions || [];
-            drawRegions.call(this, this.regions);
+            drawHosts.call(this, this.regions);
         }.bind(this));
 
         $("input[type='checkbox']").on("switchChange.bootstrapSwitch", function (e, data) {
@@ -139,6 +329,7 @@ var Monitoring = (function () {
 
             var newst = !this.measures_status[type];
             this.measures_status[type] = newst;
+            this.variables[type+"On"].set(newst.toString());
             if (newst) {
                 // $("." + type).removeClass("hide");
                 $("." + type).removeClass("myhide");
@@ -178,6 +369,7 @@ var Monitoring = (function () {
             }
             this.options.orderby = id;
             this.options.orderinc = newmode;
+            this.variables.sort.set(id + "//" + newmode);
             sortRegions.call(this);
         }.bind(this));
     }
@@ -189,7 +381,7 @@ var Monitoring = (function () {
         if (inc === "") {
             return;
         }
-        $(".regionChart").sort(function (a, b) {
+        $(".hostChart").sort(function (a, b) {
             var dataA = data[a.id],
                 dataB = data[b.id];
             var itemA = dataA[by],
@@ -253,6 +445,10 @@ var Monitoring = (function () {
         FIDASHRequests.get(url, function(err, data) {
             if (err) {
                 window.console.log(err);
+                // The API are down
+                var regionsT = ["Spain2", "Berlin2"];
+                fillRegionSelector(regionsT.sort());
+                this.regions = $("#region_selector").val() || [];
                 return;
             }
             var regions = [];
@@ -267,10 +463,6 @@ var Monitoring = (function () {
         }.bind(this));
     }
 
-    /******************************************************************/
-    /*                 P U B L I C   F U N C T I O N S                */
-    /******************************************************************/
-
     function receiveRegions(regionsRaw) {
         var regions = JSON.parse(regionsRaw);
         // Check it's a list
@@ -282,21 +474,58 @@ var Monitoring = (function () {
         this.last_regions = []; // Reset regions! :)
         // Empty before override
         $("#regionContainer").empty();
-        drawRegions.call(this, this.regions);
+        drawHosts.call(this, this.regions);
     }
+
+    function handleVariables() {
+        if (this.variables.cpuOn.get() === "") {
+            this.variables.cpuOn.set("true");
+        } else if (this.variables.cpuOn.get() !== "true") {
+            this.measures_status.cpu = false;
+            $(".cpu").addClass("myhide");
+            // toggle the switch
+        }
+        if (this.variables.ramOn.get() === "") {
+            this.variables.ramOn.set("true");
+        } else if (this.variables.ramOn.get() !== "true") {
+            this.measures_status.ram = false;
+            $(".ram").addClass("myhide");
+        }
+        if (this.variables.diskOn.get() === "") {
+            this.variables.diskOn.set("true");
+        } else if (this.variables.diskOn.get() !== "true") {
+            this.measures_status.disk = false;
+            $(".disk").addClass("myhide");
+        }
+
+        var sort = this.variables.sort.get();
+        var matchS = sort.match(/^(.+)\/\/(.+)$/);
+        if (sort && matchS) {
+            $("#" + matchS[1] + "sort").addClass("fa-" + matchS[2]);
+            this.options.orderby = matchS[1];
+            this.options.orderinc = matchS[2];
+            sortRegions.call(this);
+        }
+    }
+
+    /******************************************************************/
+    /*                 P U B L I C   F U N C T I O N S                */
+    /******************************************************************/
 
     Monitoring.prototype = {
         init: function () {
             // Load the Visualization API and the piechart package.
-            google.load("visualization", "1", {packages:["corechart"]});
-            google.setOnLoadCallback(getRegionsMonitoring.bind(this));
+            /* google.load("visualization", "1", {packages:["corechart"]}); */
+            /* google.setOnLoadCallback(getRegionsMonitoring.bind(this)); */
+            getRegionsMonitoring.call(this);
 
             setEvents.call(this);
 
             // Initialize switchs
             $("[name='select-charts-region']").bootstrapSwitch();
-            $("[name='select-charts-host']").bootstrapSwitch();
+            // $("[name='select-charts-host']").bootstrapSwitch();
 
+            MashupPlatform.prefs.registerCallback(handlePreferences.bind(this));
             MashupPlatform.wiring.registerCallback("regions", receiveRegions.bind(this));
         }
     };
