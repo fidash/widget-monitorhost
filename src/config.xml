@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<widget xmlns="http://wirecloud.conwet.fi.upm.es/ns/macdescription/1" vendor="UPM-ETSIINF" name="monitoring-hosts" version="0.9.0">
+<widget xmlns="http://wirecloud.conwet.fi.upm.es/ns/macdescription/1" vendor="UPM-ETSIINF" name="monitoring-hosts" version="0.9.1">
 
   <details>
     <title>Monitoring Hosts</title>
@@ -31,6 +31,7 @@
     <variable name="diskOn" type="text" label="Disk ON" description="" />
 
     <variable name="sort" type="text" label="Type of sorting" description="" />
+    <variable name="closed" type="text" label="Navbar closed" description="" />
   </persistentvariables>
 
   <contents src="index.html" useplatformstyle="true"/>

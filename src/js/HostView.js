@@ -61,7 +61,7 @@ var HostView = (function () {
     /*                 P U B L I C   F U N C T I O N S                */
     /******************************************************************/
 
-    HostView.prototype.build = function (region, host, data, status, minvalues, comparef) {
+    HostView.prototype.build = function (region, host, data, status, minvalues, comparef, filtertext) {
         var id = region + "-" + host;
         var measures = data.measures[0];
 
@@ -80,10 +80,11 @@ var HostView = (function () {
 
         // If some of the data are greater than the min values, the host will be showed, if not it will be hidden
         var hideHost = comparef(cpuData > minvalues.cpu, ramData > minvalues.ram, diskData > minvalues.disk) ? "" : "hide";
+        var hideFilter = filtertext !== "" && id.toLowerCase().indexOf(filtertext) < 0 ? "filterhide" : "";
 
         $("<div></div>")
             .prop("id", id)
-            .addClass("flexitem hostChart noselect " + region + " " + hideHost)
+            .addClass("flexitem hostChart noselect " + region + " " + hideHost + " " + hideFilter)
             .appendTo("#regionContainer")
             .prop("title", "Host " + host + " of the region " + region)
             .tooltipster({

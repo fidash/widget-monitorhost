@@ -77,6 +77,7 @@ var Monitoring = (function () {
         this.regions = [];
 
         this.view   = "region";
+        this.filtertext = "";
         this.hostId = $('#host').val();
         this.hostsByRegion = {};
         this.options = {
@@ -101,13 +102,14 @@ var Monitoring = (function () {
             cpuOn: MashupPlatform.widget.getVariable("cpuOn"),
             ramOn: MashupPlatform.widget.getVariable("ramOn"),
             diskOn: MashupPlatform.widget.getVariable("diskOn"),
-            sort: MashupPlatform.widget.getVariable("sort")
+            sort: MashupPlatform.widget.getVariable("sort"),
+            closed: MashupPlatform.widget.getVariable("closed")
         };
 
         this.comparef = or;
 
         handlePreferences.call(this);
-        handleVariables.call(this);
+
     }
 
     /******************************************************************
@@ -249,12 +251,12 @@ var Monitoring = (function () {
                 window.console.log(err);
                 // The API seems down
                 var h = createDefaultHost(region, host);
-                var hdata2 = new HostView().build(region, host, h, this.measures_status, this.minvalues, this.comparef);
+                var hdata2 = new HostView().build(region, host, h, this.measures_status, this.minvalues, this.comparef, this.filtertext);
                 this.options.data[hdata2.id] = hdata2.data;
                 sortRegions.call(this);
                 return;
             }
-            var hdata = new HostView().build(region, host, data, this.measures_status, this.minvalues, this.comparef);
+            var hdata = new HostView().build(region, host, data, this.measures_status, this.minvalues, this.comparef, this.filtertext);
             this.options.data[hdata.id] = hdata.data;
             sortRegions.call(this);
         }.bind(this));
@@ -302,6 +304,38 @@ var Monitoring = (function () {
             this.hostId = $('#host').val();
             this.last_regions = this.last_regions || [];
             drawHosts.call(this, this.regions);
+        }.bind(this));
+
+        $("#filterbox").keyup(function() {
+            var text = $(arguments[0].target).val().toLowerCase();
+            this.filtertext = text;
+            if (text === "") {
+                $(".filterhide").removeClass("filterhide");
+            } else {
+                $(".hostChart .regionTitle").each(function() {
+                    var n = $(this).text();
+                    var i = n.toLowerCase().indexOf(text);
+                    if (i < 0) {
+                        $("#" + n).addClass("filterhide");
+                    } else {
+                        $("#" + n).removeClass("filterhide");
+                    }
+                });
+            }
+        }.bind(this));
+
+        $(".btn-slide").click(function(x) {
+            var elem = $(x.target);
+            var closing = elem.text() === "^";
+            this.variables.closed.set("" + closing);
+            if (closing) {
+                $(".navbar").collapse('hide');
+                elem.text('v');
+            } else {
+                $(".navbar").collapse('show');
+                elem.text('^');
+            }
+            return false;
         }.bind(this));
 
         $("input[type='checkbox']").on("switchChange.bootstrapSwitch", function (e, data) {
@@ -444,6 +478,11 @@ var Monitoring = (function () {
         handleSwitchVariable.call(this, "ram");
         handleSwitchVariable.call(this, "disk");
 
+        if (this.variables.closed.get() === "true") {
+            $(".navbar").collapse('hide');
+            $(".btn-slide").text('v');
+        }
+
         var sort = this.variables.sort.get();
         var matchS = sort.match(/^(.+)\/\/(.+)$/);
         if (sort && matchS) {
@@ -460,12 +499,12 @@ var Monitoring = (function () {
 
     Monitoring.prototype = {
         init: function () {
-            // Load the Visualization API and the piechart package.
-            /* google.load("visualization", "1", {packages:["corechart"]}); */
-            /* google.setOnLoadCallback(getRegionsMonitoring.bind(this)); */
-            getRegionsMonitoring.call(this);
+            $(".navbar").collapse();
+            handleVariables.call(this);
 
             setEvents.call(this);
+
+            getRegionsMonitoring.call(this);
 
             // Initialize switchs
             $("[name='select-charts-region']").bootstrapSwitch();

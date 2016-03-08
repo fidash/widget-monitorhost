@@ -1,16 +1,16 @@
 {
     "name": "MonitoringHosts",
-    "homepage": "https://github.com/fidash/widget-resourcesusage",
-    "version": "0.9.0",
+    "homepage": "https://github.com/fidash/widget-monitorhosts",
+    "version": "0.9.1",
     "vendor": "UPM-ETSIINF",
     "author": "CoNWeT Lab., Universidad Politecnica de Madrid",
-    "description": "A widget for monitoring OpenStack hosts and virtual machines.",
+    "description": "A widget for monitoring OpenStack hosts.",
     "repository": {
         "type": "git",
-        "url": "https://github.com/fidash/widget-resourcesusage"
+        "url": "https://github.com/fidash/widget-monitorhosts"
     },
     "bugs": {
-        "url": "https://github.com/fidash/widget-resourcesusage/issues"
+        "url": "https://github.com/fidash/widget-monitorhosts/issues"
     },
     "keywords": [
         "widget",
