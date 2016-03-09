@@ -102,7 +102,7 @@ body {
 }
 
 .mynavbar {
-  margin-bottom: 5px;
+  margin-bottom: 0px;
 }
 
 .measureTitle {
@@ -302,6 +302,40 @@ body {
 
 .btn-slide:focus, .btn-slide:hover {
   color: #000;
+  text-decoration: none;
+  outline: none;
+}
+
+.hamburger {
+  margin: 0 auto;
+  display: block;
+  position: relative;
+  width: 1.25em;
+  height: 1em;
+  border-top: 0.2em solid #000;
+  border-bottom: 0.2em solid #000;
+}
+
+.hamburger:before {
+  content: "";
+  position: absolute;
+  top: 0.3em;
+  left: 0px;
+  width: 100%;
+  border-top: 0.2em solid #000;
+}
+
+.burgercontainer {
+  width: 1.8em;
+  height: 1.6em;
+  border: 1px solid #000;
+  background-color: #EEEEEE;
+  margin: 0 auto;
+  padding-top: 0.2em;
+}
+
+.burgercontainer:focus, .burgercontainer:hover {
+  cursor: pointer;
   text-decoration: none;
   outline: none;
 }

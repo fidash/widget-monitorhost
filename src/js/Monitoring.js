@@ -324,16 +324,18 @@ var Monitoring = (function () {
             }
         }.bind(this));
 
-        $(".btn-slide").click(function(x) {
-            var elem = $(x.target);
-            var closing = elem.text() === "^";
+        $(".burgercontainer").click(function(x) {
+            // var elem = $(x.target);
+            // var closing = elem.text() === "^";
+            var closing = this.variables.closed.get() === "true";
+            closing = !closing;
             this.variables.closed.set("" + closing);
             if (closing) {
                 $(".navbar").collapse('hide');
-                elem.text('v');
+                // elem.text('v');
             } else {
                 $(".navbar").collapse('show');
-                elem.text('^');
+                // elem.text('^');
             }
             return false;
         }.bind(this));
@@ -480,7 +482,7 @@ var Monitoring = (function () {
 
         if (this.variables.closed.get() === "true") {
             $(".navbar").collapse('hide');
-            $(".btn-slide").text('v');
+            // $(".btn-slide").text('v');
         }
 
         var sort = this.variables.sort.get();
