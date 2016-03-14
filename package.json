@@ -1,7 +1,7 @@
 {
     "name": "MonitoringHosts",
     "homepage": "https://github.com/fidash/widget-monitorhosts",
-    "version": "0.9.1",
+    "version": "0.9.2",
     "vendor": "UPM-ETSIINF",
     "author": "CoNWeT Lab., Universidad Politecnica de Madrid",
     "description": "A widget for monitoring OpenStack hosts.",

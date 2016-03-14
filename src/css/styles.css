@@ -339,3 +339,27 @@ body {
   text-decoration: none;
   outline: none;
 }
+
+.slidecontainer {
+  width: 36px;
+  height: 10px;
+  margin: 0 auto;
+}
+
+.slidecontainer:focus, .slidecontainer:hover {
+  cursor: pointer;
+  text-decoration: none;
+  outline: none;
+}
+
+.slidecontainer.open {
+  width: 36px;
+  height: 10px;
+  content:url(../images/persiana1.png);
+}
+
+.slidecontainer.closed {
+  width: 42px;
+  height: 8px;
+  content:url(../images/persiana2.png);
+}

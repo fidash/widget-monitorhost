@@ -324,7 +324,7 @@ var Monitoring = (function () {
             }
         }.bind(this));
 
-        $(".burgercontainer").click(function(x) {
+        $(".slidecontainer").click(function(x) {
             // var elem = $(x.target);
             // var closing = elem.text() === "^";
             var closing = this.variables.closed.get() === "true";
@@ -332,9 +332,11 @@ var Monitoring = (function () {
             this.variables.closed.set("" + closing);
             if (closing) {
                 $(".navbar").collapse('hide');
+                $(".slidecontainer").removeClass("open").addClass("closed");
                 // elem.text('v');
             } else {
                 $(".navbar").collapse('show');
+                $(".slidecontainer").removeClass("closed").addClass("open");
                 // elem.text('^');
             }
             return false;
@@ -482,7 +484,11 @@ var Monitoring = (function () {
 
         if (this.variables.closed.get() === "true") {
             $(".navbar").collapse('hide');
+            $(".slidecontainer").removeClass("open").addClass("closed");
             // $(".btn-slide").text('v');
+        } else {
+            $(".navbar").collapse('show');
+            $(".slidecontainer").removeClass("closed").addClass("open");
         }
 
         var sort = this.variables.sort.get();
