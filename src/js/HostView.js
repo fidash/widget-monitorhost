@@ -82,6 +82,8 @@ var HostView = (function () {
         var hideHost = comparef(cpuData > minvalues.cpu, ramData > minvalues.ram, diskData > minvalues.disk) ? "" : "hide";
         var hideFilter = filtertext !== "" && id.toLowerCase().indexOf(filtertext) < 0 ? "filterhide" : "";
 
+        $("#" + id).remove(); // Remove old ones with this id :)
+
         $("<div></div>")
             .prop("id", id)
             .addClass("flexitem hostChart noselect " + region + " " + hideHost + " " + hideFilter)
@@ -99,9 +101,9 @@ var HostView = (function () {
             .appendTo("#" + id);
 
 
-        drawChart(id, 'cpu', cpuData/100, cpuText, status.cpu);
-        drawChart(id, 'ram', ramData/100, ramText, status.ram);
-        drawChart(id, 'disk', diskData/100, diskText, status.disk);
+        drawChart(id, "cpu", cpuData/100, cpuText, status.cpu);
+        drawChart(id, "ram", ramData/100, ramText, status.ram);
+        drawChart(id, "disk", diskData/100, diskText, status.disk);
 
         return {
             id: id,
