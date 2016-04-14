@@ -47,7 +47,7 @@ var HostView = (function () {
         var progress = new ProgressBar.Line("#" + id, {
             color: types[type].color,
             trailColor: "#ddd",
-            strokeWidth: 4,
+            strokeWidth: 5,
             svgStyle: {
                 width: "100%"
             }

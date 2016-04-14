@@ -6,6 +6,14 @@ body {
 #regionContainer {
   margin-right: 5px;
   margin-left: 5px;
+  margin-top: 93px;
+  margin-bottom: 5px;
+
+  -moz-transition: margin-top 0.3s ease 0s;
+  -o-transition: margin-top 0.3s ease 0s;
+  -webkit-transition: margin-top 0.3s ease 0s;
+  -ms-transition: margin-top 0.3s ease 0s;
+  transition: margin-top 0.3s ease 0s;
 }
 
 .chartContainer {
@@ -79,6 +87,9 @@ body {
   -webkit-box-shadow: 2px 2px 5px 0px rgba(0,0,0,0.2);
   -moz-box-shadow: 2px 2px 5px 0px rgba(0,0,0,0.2);
   box-shadow: 2px 2px 5px 0px rgba(0,0,0,0.2);
+
+  z-index: -1;
+  position: relative;
 }
 
 .noselect {
@@ -103,6 +114,14 @@ body {
 
 .mynavbar {
   margin-bottom: 0px;
+}
+
+.ontop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 10000 !important;
 }
 
 .measureTitle {
@@ -246,19 +265,19 @@ body {
 
 
 
-#custom-search-input{
-  padding: 3px;
+#custom-search-input {
+  /* padding: 3px; */
   border: solid 1px #E4E4E4;
   border-radius: 6px;
   background-color: #fff;
 }
 
-#custom-search-input input{
+#custom-search-input input {
   border: 0;
   box-shadow: none;
 }
 
-#custom-search-input button{
+#custom-search-input button {
   margin: 2px 0 0 0;
   background: none;
   box-shadow: none;
@@ -268,14 +287,14 @@ body {
   border-left: solid 1px #ccc;
 }
 
-#custom-search-input button:hover{
+#custom-search-input button:hover {
   border: 0;
   box-shadow: none;
   border-left: solid 1px #ccc;
 }
 
-#custom-search-input .glyphicon-search{
-  font-size: 23px;
+#custom-search-input .glyphicon-search {
+  font-size: 15px;
 }
 
 .slide {

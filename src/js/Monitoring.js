@@ -5,69 +5,6 @@ var Monitoring = (function () {
     /***  AUTHENTICATION VARIABLES  ***/
     var url = "http://130.206.84.4:11027/monitoring/regions/";
 
-    var createDefaultHost = function createDefaultHost(region, host) {
-        var randomN = function randomN() {
-            return (Math.random() * 100).toString();
-        };
-
-        return {
-            _links: {
-                self: {
-                    href: "/monitoring/regions/" + region + "/hosts/" + host
-                },
-                services: {
-                    href: "/monitoring/regions/" + region + "/hosts/" + host + "/services"
-                }
-            },
-            regionid: region,
-            hostid: host,
-            ipAddresses: [
-                {
-                    ipAddress: "1.2.3.4"
-                }
-            ],
-            role: "compute/controller",
-            owd_endpoint_dest_default: "xyz",
-            bwd_endpoint_dest_default: "xyz",
-            owd_frequency: "100",
-            bwd_frequency: "100",
-            measures: [
-                {
-                    timestamp: "2013-12-20 12.00",
-                    percCPULoad: {
-                        value: randomN(),
-                        description: "desc"
-                    },
-                    percRAMUsed: {
-                        value: randomN(),
-                        description: "desc"
-                    },
-                    percDiskUsed: {
-                        value: randomN(),
-                        description: "desc"
-                    },
-                    sysUptime: {
-                        value: randomN(),
-                        description: "desc"
-                    },
-                    owd_status: {
-                        value: randomN(),
-                        description: "desc"
-                    },
-                    bwd_status: {
-                        value: randomN(),
-                        description: "desc"
-                    }
-                }
-            ],
-            traps: [
-                {
-                    description: "desc"
-                }
-            ]
-        };
-    };
-
     /*****************************************************************
     *                     C O N S T R U C T O R                      *
     *****************************************************************/
@@ -220,39 +157,21 @@ var Monitoring = (function () {
                 window.console.log(err);
                 MashupPlatform.widget.log("The API seems down (Hosts from region " + region + " ): " + err.statusText);
 
-                // The API are down, some test data
-                // var hosts2 = [];
-                // for (var i = 0; i < Math.floor(Math.random() * 100); i++) {
-                //     hosts2.push(Math.floor(Math.random() * 10000));
-                // }
-
-                // var hosts2 = [Math.random() * 100, Math.random() * 100, Math.random() * 100];
-
-                // this.hostsByRegion[region] = hosts2;
-                // hosts2.forEach(function (h) {
-                //     setTimeout(drawHost.bind(this, region, h), (Math.random() * 3000));
-
-                //     // drawHost.call(this, region, h);
-                // }.bind(this));
                 return;
             }
 
-            // setPlaceholder(false);
             // Data is a list of hosts, let's do one request by host
             var hosts = [];
             data.hosts.forEach(function (x) {
-                hosts.push(x.id);
+                if (!!x.id && x.id !== "None") {
+                    hosts.push(x.id);
+                }
             });
 
             this.hostsByRegion[region] = hosts;
 
             hosts.forEach(drawHost.bind(this, region));
             sortRegions.call(this);
-
-            /* var view = new views[this.view]();
-               var rdata = view.build(region, data, this.measures_status);
-               this.options.data[rdata.region] = rdata.data;
-               sortRegions.call(this); */
         }.bind(this));
     }
 
@@ -262,12 +181,6 @@ var Monitoring = (function () {
             if (err) {
                 window.console.log(err);
                 MashupPlatform.widget.log("The API seems down (Host " + host + " from region " + region + "): " + err.statusText);
-
-                // The API seems down
-                // var h = createDefaultHost(region, host);
-                // var hdata2 = new HostView().build(region, host, h, this.measures_status, this.minvalues, this.comparef, this.filtertext);
-                // this.options.data[hdata2.id] = hdata2.data;
-                // sortRegions.call(this);
                 return;
             }
 
@@ -349,12 +262,12 @@ var Monitoring = (function () {
             if (closing) {
                 $(".navbar").collapse("hide");
                 $(".slidecontainer").removeClass("open").addClass("closed");
-
+                $("#regionContainer").css("margin-top", "6px");
                 // elem.text("v");
             } else {
                 $(".navbar").collapse("show");
                 $(".slidecontainer").removeClass("closed").addClass("open");
-
+                $("#regionContainer").css("margin-top", "93px");
                 // elem.text('^');
             }
 
@@ -516,11 +429,12 @@ var Monitoring = (function () {
         if (this.variables.closed.get() === "true") {
             $(".navbar").collapse("hide");
             $(".slidecontainer").removeClass("open").addClass("closed");
-
+            $("#regionContainer").css("margin-top", "6px");
             // $(".btn-slide").text("v");
         } else {
             $(".navbar").collapse("show");
             $(".slidecontainer").removeClass("closed").addClass("open");
+            $("#regionContainer").css("margin-top", "93px");
         }
 
         var sort = this.variables.sort.get();

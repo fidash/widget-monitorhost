@@ -12,50 +12,52 @@
   <body>
 
 
-    <div class="mynavbar navbar navbar-default" style="z-index: 1000;">
-      <div class="row" style="margin-right: -11px;">
-        <div class="selects">
-          <select class="form-control selectpicker" id="region_selector" multiple data-selected-text-format="count" data-role="none" name="region" title="Loading Regions" data-count-selected-text="{0} regiones" disabled></select>
-        </div>
+    <div class="ontop">
+      <div class="mynavbar navbar navbar-default" style="z-index: 1000;">
+        <div class="row" style="margin-right: -17px;">
+          <div class="selects">
+            <select class="form-control selectpicker" id="region_selector" multiple data-selected-text-format="count" data-role="none" name="region" title="Loading Regions" data-count-selected-text="{0} regiones" disabled></select>
+          </div>
 
-        <div class="input-group pull-right hide">
-          <input type="text" id="host" class="form-control searcher" placeholder="Insert a Host ID..." />
-          <button id="host-button" class="input-group-addon">Search</button>
-        </div>
+          <div class="input-group pull-right hide">
+            <input type="text" id="host" class="form-control searcher" placeholder="Insert a Host ID..." />
+            <button id="host-button" class="input-group-addon">Search</button>
+          </div>
 
-        <div id="switch-region" class="container-fluid switch-container">
-          <div id="cpuSwitch" class="col-xs-3" style="text-align: center;">
-            <input type="checkbox" name="select-charts-region" data-size="mini" data-handle-width="30" data-label-width="10" data-on-text="CPU" data-off-text="CPU" checked />
-            <i id="cpusort" class="sort fa fa-fw fa-sort"></i>
-          </div>
-          <div id="ramSwitch" class="col-xs-3" style="text-align: center;">
-            <input type="checkbox" name="select-charts-region" data-size="mini" data-handle-width="30" data-label-width="10" data-on-text="RAM" data-off-text="RAM" checked />
-            <i id="ramsort" class="sort fa fa-fw fa-sort"></i>
-          </div>
-          <div id="diskSwitch" class="col-xs-3" style="text-align: center;">
-            <input type="checkbox" name="select-charts-region" data-size="mini" data-handle-width="30" data-label-width="10" data-on-text="Disk" data-off-text="Disk" checked />
-            <i id="disksort" class="sort fa fa-fw fa-sort"></i>
+          <div id="switch-region" class="container-fluid switch-container">
+            <div id="cpuSwitch" class="col-xs-3" style="text-align: center;">
+              <input type="checkbox" name="select-charts-region" data-size="mini" data-handle-width="30" data-label-width="10" data-on-text="CPU" data-off-text="CPU" checked />
+              <i id="cpusort" class="sort fa fa-fw fa-sort"></i>
+            </div>
+            <div id="ramSwitch" class="col-xs-3" style="text-align: center;">
+              <input type="checkbox" name="select-charts-region" data-size="mini" data-handle-width="30" data-label-width="10" data-on-text="RAM" data-off-text="RAM" checked />
+              <i id="ramsort" class="sort fa fa-fw fa-sort"></i>
+            </div>
+            <div id="diskSwitch" class="col-xs-3" style="text-align: center;">
+              <input type="checkbox" name="select-charts-region" data-size="mini" data-handle-width="30" data-label-width="10" data-on-text="Disk" data-off-text="Disk" checked />
+              <i id="disksort" class="sort fa fa-fw fa-sort"></i>
+            </div>
           </div>
         </div>
-      </div>
-      <div class="row" style="margin-top: 8px; margin-right: -11px;">
-        <div class="col-md-12">
-          <div id="custom-search-input">
-            <div class="input-group">
-              <input id="filterbox" type="text" class="form-control input-lg" placeholder="Filter" />
-              <span class="input-group-btn">
-                <button class="btn btn-info btn-lg" type="button">
-                  <i class="glyphicon glyphicon-search"></i>
-                </button>
-              </span>
+        <div class="row" style="margin-top: 8px; margin-right: -11px;">
+          <div class="col-md-12">
+            <div id="custom-search-input">
+              <div class="input-group">
+                <input id="filterbox" type="text" class="form-control input-lg" placeholder="Filter" />
+                <span class="input-group-btn">
+                  <button class="btn btn-info btn-lg" type="button">
+                    <i class="glyphicon glyphicon-search"></i>
+                  </button>
+                </span>
+              </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
 
-    <div class="slide">
-      <div class="slidecontainer"></div>
+      <div class="slide">
+        <div class="slidecontainer"></div>
+      </div>
     </div>
     <!-- <p class="slide">
          <div class="burgercontainer">
