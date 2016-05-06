@@ -1,5 +1,6 @@
 #Resources Usage Widget
 
+[![GitHub license](https://img.shields.io/badge/license-AGPLv3-blue.svg)](https://raw.githubusercontent.com/fidash/widget-monitorhosts/master/LICENSE.txt)]
 [![Build Status](https://build.conwet.fi.upm.es/jenkins/view/FI-Dash/job/Widget%20Resources%20Usage/badge/icon)](https://build.conwet.fi.upm.es/jenkins/view/FI-Dash/job/Widget%20Resources%20Usage/)
 
 This project is part of [FIWARE](https://www.fiware.org/). This widget is part of FI-Dash component included in FIWARE.
