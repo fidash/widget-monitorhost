@@ -1,5 +1,5 @@
 {
-    "license": "AGPL-3.0", 
+    "license": "Apache-2.0", 
     "vendor": "UPM-ETSIINF", 
     "description": "A widget for monitoring OpenStack hosts.", 
     "repository": {
@@ -40,13 +40,13 @@
         "grunt-contrib-watch": "^0.6.1", 
         "grunt-contrib-jshint": "^1.0.0", 
         "grunt-gitinfo": "^0.1.7", 
-        "grunt-contrib-compress": "^1.0.0", 
         "grunt-contrib-clean": "^1.0.0", 
         "karma-junit-reporter": "^0.3.6", 
         "karma-coverage": "^0.5.3", 
         "jasmine": "^2.3.1", 
         "karma-jasmine": "~0.3.7", 
         "grunt-text-replace": "^0.4.0", 
+        "grunt-contrib-compress": "^1.0.0", 
         "grunt-mutation-testing": "^1.1.0", 
         "grunt": "^0.4.5", 
         "grunt-wirecloud": "^0.7.1", 
