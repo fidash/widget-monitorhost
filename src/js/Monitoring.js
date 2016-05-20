@@ -11,6 +11,7 @@ var Monitoring = (function () {
 
     function Monitoring() {
         this.regions = [];
+        this.torequest = [];
 
         this.view   = "region";
         this.filtertext = "";
@@ -147,6 +148,9 @@ var Monitoring = (function () {
     function removeRegion(region) {
         // Remove all hosts from the region
         $("." + region).remove();
+        this.torequest = this.torequest.filter(function (x) {
+            return x.region !== region;
+        });
     }
 
     function drawHostsRegion(region) {
@@ -160,18 +164,25 @@ var Monitoring = (function () {
                 return;
             }
 
+            var startR = this.torequest.length === 0;
+
             // Data is a list of hosts, let's do one request by host
             var hosts = [];
             data.hosts.forEach(function (x) {
                 if (!!x.id && x.id !== "None") {
                     hosts.push(x.id);
+                    this.torequest.push({region: region, id: x.id});
                 }
-            });
+            }.bind(this));
 
             this.hostsByRegion[region] = hosts;
 
-            hosts.forEach(drawHost.bind(this, region));
-            sortRegions.call(this);
+            if (startR) {
+                startRequests.call(this);
+            }
+
+            // hosts.forEach(drawHost.bind(this, region));
+            // sortRegions.call(this);
         }.bind(this));
     }
 
@@ -183,12 +194,29 @@ var Monitoring = (function () {
                 MashupPlatform.widget.log("The API seems down (Host " + host + " from region " + region + "): " + err.statusText);
                 return;
             }
+            if (isRegionSelected(region)) {
+                try {
+                    var hdata = new HostView().build(region, host, data, this.measures_status, this.minvalues, this.comparef, this.filtertext);
+                    this.options.data[hdata.id] = hdata.data;
+                    sortRegions.call(this);
+                } catch(error) {
+                    console.log("Error building data for host " + host + " in region " + region);
+                }
+            }
 
-            var hdata = new HostView().build(region, host, data, this.measures_status, this.minvalues, this.comparef, this.filtertext);
-            this.options.data[hdata.id] = hdata.data;
-            sortRegions.call(this);
+            startRequests.call(this);
+
         }.bind(this));
     }
+
+    function startRequests () {
+        if (this.torequest.length === 0) {
+            return;
+        }
+        var elem = this.torequest.shift();
+        drawHost.call(this, elem.region, elem.id);
+    }
+
 
     function fillRegionSelector(regions) {
         regions.forEach(function (region) {
@@ -226,6 +254,11 @@ var Monitoring = (function () {
             return ops.indexOf(i) >= 0;
         });
     }
+
+    function isRegionSelected(region) {
+        return $("#region_selector").val().indexOf(region) > -1;
+    }
+
 
     function setEvents() {
         $("#region_selector").change(function () {

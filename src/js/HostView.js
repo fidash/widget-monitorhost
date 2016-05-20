@@ -65,14 +65,13 @@ var HostView = (function () {
         var id = region + "-" + host;
         var measures = data.measures[0];
 
-        // parseFloat but fixed
         var cpuData = parseFloat(measures.percCPULoad.value);
-        var ramData = parseFloat(measures.percRAMUsed.value);
-        var diskData = parseFloat(measures.percDiskUsed.value);
+        var ramData = parseFloat(measures.percRAMUsed ? measures.percRAMUsed.value : 0.0);
+        var diskData = parseFloat(measures.percDiskUsed ? measures.percDiskUsed.value : 0.0);
 
-        var uptime = measures.sysUptime.value;
-        var owdStatus = measures.owd_status.value;
-        var bwdStatus = measures.bwd_status.value;
+        // var uptime = measures.sysUptime ? measures.sysUptime.value : 0.0;
+        // var owdStatus = measures.owd_status ? measures.owd_status.value : 0.0;
+        // var bwdStatus = measures.bwd_status ? measures.bwd_status.value : 0.0;
 
         var cpuText = cpuData.toFixed(2) + "% CPU load";
         var ramText = ramData.toFixed(2) + "% RAM used";
